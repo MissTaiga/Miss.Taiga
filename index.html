@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Miss Taiga's Bewertung</title>
+<style>
+* {
+box-sizing: border-box;
+margin: 0;
+padding: 0;
+font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+background-color: #0f172a;
+color: #f8fafc;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+min-height: 100vh;
+padding: 40px 20px 80px 20px;
+}
+
+.container {
+background-color: #1e293b;
+width: 100%;
+max-width: 950px;
+border-radius: 16px;
+box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+padding: 30px;
+display: flex;
+flex-direction: column;
+gap: 30px;
+}
+
+/* Frostiger Header */
+.frosty-header {
+width: 100%;
+padding: 25px;
+background: linear-gradient(135deg, rgba(147, 197, 253, 0.07), rgba(6, 182, 212, 0.03));
+backdrop-filter: blur(8px);
+-webkit-backdrop-filter: blur(8px);
+border-radius: 12px;
+border: 1px solid rgba(147, 197, 253, 0.15);
+text-align: center;
+position: relative;
+overflow: hidden;
+box-shadow: inset 0 0 15px rgba(147, 197, 253, 0.05);
+}
+
+/* Dezenter Licht-Glow im Hintergrund des Headers */
+.frosty-header::before {
+content: '';
+position: absolute;
+top: -50%;
+left: -50%;
+width: 200%;
+height: 200%;
+background: radial-gradient(circle, rgba(147, 197, 253, 0.08) 0%, transparent 60%);
+pointer-events: none;
+}
+
+.frosty-header h1 {
+font-size: 2.2rem;
+font-weight: 300;
+letter-spacing: 2px;
+color: #e2e8f0;
+text-shadow: 0 0 10px rgba(147, 197, 253, 0.3), 0 0 20px rgba(147, 197, 253, 0.1);
+font-family: 'Cambria', 'Georgia', serif;
+}
+
+.frosty-header .subtitle {
+font-size: 0.85rem;
+text-transform: uppercase;
+letter-spacing: 4px;
+color: #93c5fd;
+margin-top: 5px;
+opacity: 0.8;
+}
+
+/* Das obere Grid für Bild und Regler */
+.main-content {
+display: grid;
+grid-template-columns: 1fr 1.2fr;
+gap: 30px;
+width: 100%;
+}
+
+@media (max-width: 768px) {
+.main-content {
+grid-template-columns: 1fr;
+}
+.frosty-header h1 {
+font-size: 1.8rem;
+}
+}
+
+/* Linke Spalte: Karte & Upload */
+.card-section {
+display: flex;
+flex-direction: column;
+gap: 20px;
+}
+
+.input-group {
+width: 100%;
+}
+
+.input-group input[type="text"] {
+width: 100%;
+padding: 12px;
+background-color: #0f172a;
+border: 2px solid #334155;
+border-radius: 8px;
+color: #fff;
+font-size: 1rem;
+outline: none;
+transition: border-color 0.2s;
+}
+
+.input-group input[type="text"]:focus {
+border-color: #3b82f6;
+}
+
+.image-card {
+width: 100%;
+aspect-ratio: 3/4;
+background-color: #090d16;
+border: 3px dashed #334155;
+border-radius: 12px;
+display: flex;
+justify-content: center;
+align-items: center;
+cursor: pointer;
+overflow: hidden;
+position: relative;
+transition: border-color 0.2s;
+}
+
+.image-card:hover {
+border-color: #3b82f6;
+}
+
+.image-card img {
+width: 100%;
+height: 100%;
+display: block;
+object-fit: contain;
+}
+
+.image-card .placeholder {
+text-align: center;
+color: #64748b;
+padding: 20px;
+}
+
+.image-card .placeholder svg {
+width: 48px;
+height: 48px;
+fill: #475569;
+margin-bottom: 10px;
+}
+
+.hidden {
+display: none !important;
+}
+
+/* Rechte Spalte: Kategorien & Regler */
+.rating-section {
+display: flex;
+flex-direction: column;
+gap: 20px;
+}
+
+.category-row {
+display: flex;
+flex-direction: column;
+gap: 8px;
+}
+
+.category-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+
+.category-name {
+font-weight: 600;
+color: #e2e8f0;
+}
+
+.percent-input {
+width: 60px;
+background: transparent;
+border: none;
+color: #3b82f6;
+font-weight: bold;
+text-align: right;
+font-size: 1rem;
+outline: none;
+}
+
+.slider-container {
+position: relative;
+width: 100%;
+height: 8px;
+background-color: #0f172a;
+border-radius: 4px;
+}
+
+.bar-fill {
+position: absolute;
+height: 100%;
+background: linear-gradient(90deg, #3b82f6, #06b6d4);
+border-radius: 4px;
+width: 80%;
+transition: width 0.1s ease-out;
+}
+
+.slider {
+position: absolute;
+width: 100%;
+top: 0;
+height: 8px;
+-webkit-appearance: none;
+background: transparent;
+outline: none;
+margin: 0;
+cursor: pointer;
+}
+
+.slider::-webkit-slider-thumb {
+-webkit-appearance: none;
+width: 18px;
+height: 18px;
+border-radius: 50%;
+background: #fff;
+border: 3px solid #3b82f6;
+box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+transition: transform 0.1s;
+}
+
+.slider::-webkit-slider-thumb:hover {
+transform: scale(1.2);
+}
+
+/* Score Boxen */
+.score-box {
+display: flex;
+justify-content: space-between;
+align-items: center;
+background-color: #0f172a;
+padding: 15px 20px;
+border-radius: 10px;
+border: 1px solid #1e293b;
+}
+
+.score-title {
+font-weight: bold;
+color: #94a3b8;
+}
+
+.score-value {
+font-size: 1.5rem;
+font-weight: 800;
+color: #06b6d4;
+}
+
+.rank-preview-box {
+display: flex;
+justify-content: space-between;
+align-items: center;
+background-color: #132238;
+padding: 15px 20px;
+border-radius: 10px;
+border: 2px solid #2563eb;
+}
+
+.rank-preview-title {
+font-weight: 600;
+color: #93c5fd;
+}
+
+.rank-preview-value {
+font-size: 1.2rem;
+font-weight: 800;
+color: #3b82f6;
+}
+
+/* Unterer Bereich im Container */
+.bottom-section {
+width: 100%;
+margin-top: 10px;
+border-top: 1px solid #334155;
+padding-top: 25px;
+}
+
+/* Fazit-Box */
+.fazit-input {
+width: 100%;
+min-height: 140px;
+padding: 15px 20px;
+text-align: center;
+background-color: transparent;
+border: 2px solid #334155;
+border-radius: 10px;
+color: #f8fafc;
+font-size: 1.05rem;
+outline: none;
+resize: none;
+overflow: hidden;
+line-height: 1.6;
+display: block;
+}
+
+.fazit-input:focus {
+border-color: #3b82f6;
+box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.fazit-input::placeholder {
+color: #475569;
+text-align: center;
+}
+
+.nav-box {
+display: flex;
+gap: 15px;
+width: 100%;
+max-width: 500px;
+}
+
+.btn {
+flex: 1;
+margin-top: 30px;
+margin-right: 20px;
+padding: 12px;
+border: none;
+border-radius: 8px;
+font-size: 1rem;
+font-weight: bold;
+cursor: pointer;
+transition: background-color 0.2s, transform 0.1s;
+text-align: center;
+text-decoration: none;
+}
+
+.btn:active {
+transform: scale(0.98);
+}
+
+.btn-primary {
+background-color: #2563eb;
+color: white;
+}
+
+.btn-primary:hover {
+background-color: #1d4ed8;
+}
+
+.btn-secondary {
+background-color: #334155;
+color: #e2e8f0;
+}
+
+.btn-secondary:hover {
+background-color: #475569;
+}
+</style>
+</head>
+<body>
+
+<div class="container" id="dashboard-container">
+
+<!-- Frostiger Header -->
+<div class="frosty-header">
+<h1>Miss Taiga's</h1>
+<div class="subtitle">Penis-Bewertung</div>
+</div>
+
+<div class="main-content">
+<!-- Linke Spalte: Upload & Name -->
+<div class="card-section">
+<div class="input-group">
+<input type="text" id="product-name" placeholder="Name">
+</div>
+
+<div class="image-card" id="img-trigger">
+<img id="card-image" class="hidden" src="" alt="Vorschau">
+<div class="placeholder" id="placeholder">
+<svg viewBox="0 0 24 24">
+<path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71z"/>
+</svg>
+<p>Bild hochladen</p>
+</div>
+</div>
+<input type="file" id="file-input" accept="image/*" class="hidden">
+</div>
+
+<!-- Rechte Spalte: Kategorien & Scores -->
+<div class="rating-section">
+<div class="category-row">
+<div class="category-header">
+<span class="category-name">Länge</span>
+<input type="text" class="percent-input" value="80%" readonly>
+</div>
+<div class="slider-container">
+<div class="bar-fill"></div>
+<input type="range" class="slider" min="0" max="100" value="80">
+</div>
+</div>
+
+<div class="category-row">
+<div class="category-header">
+<span class="category-name">Dicke</span>
+<input type="text" class="percent-input" value="80%" readonly>
+</div>
+<div class="slider-container">
+<div class="bar-fill"></div>
+<input type="range" class="slider" min="0" max="100" value="80">
+</div>
+</div>
+
+<div class="category-row">
+<div class="category-header">
+<span class="category-name">Optik</span>
+<input type="text" class="percent-input" value="80%" readonly>
+</div>
+<div class="slider-container">
+<div class="bar-fill"></div>
+<input type="range" class="slider" min="0" max="100" value="80">
+</div>
+</div>
+
+<div class="category-row">
+<div class="category-header">
+<span class="category-name">Eichel</span>
+<input type="text" class="percent-input" value="80%" readonly>
+</div>
+<div class="slider-container">
+<div class="bar-fill"></div>
+<input type="range" class="slider" min="0" max="100" value="80">
+</div>
+</div>
+
+<div class="category-row">
+<div class="category-header">
+<span class="category-name">Hoden</span>
+<input type="text" class="percent-input" value="80%" readonly>
+</div>
+<div class="slider-container">
+<div class="bar-fill"></div>
+<input type="range" class="slider" min="0" max="100" value="80">
+</div>
+</div>
+
+<div class="category-row">
+<div class="category-header">
+<span class="category-name">Rasur</span>
+<input type="text" class="percent-input" value="80%" readonly>
+</div>
+<div class="slider-container">
+<div class="bar-fill"></div>
+<input type="range" class="slider" min="0" max="100" value="80">
+</div>
+</div>
+
+<div class="category-row">
+<div class="category-header">
+<span class="category-name">Gesamtbild/Form</span>
+<input type="text" class="percent-input" value="80%" readonly>
+</div>
+<div class="slider-container">
+<div class="bar-fill"></div>
+<input type="range" class="slider" min="0" max="100" value="80">
+</div>
+</div>
+
+<div class="score-box">
+<span class="score-title">Gesamt-Bewertung</span>
+<span class="score-value" id="total-score">8.0 / 10</span>
+</div>
+
+<div class="rank-preview-box">
+<span class="rank-preview-title">Platzierung</span>
+<span class="rank-preview-value" id="calculated-rank">Berechne...</span>
+</div>
+</div>
+</div>
+
+<!-- Unterer Bereich: Zentrierte Fazit-Box -->
+<div class="bottom-section">
+<textarea id="product-fazit" class="fazit-input" placeholder="Fazit"></textarea>
+</div>
+</div>
+
+<!-- Navigations-Box außerhalb/unterhalb des Hauptcontainers -->
+<div class="external-nav-box">
+<button class="btn btn-primary" id="save-btn">Speichern</button>
+<a href="rangliste.html" class="btn btn-secondary">Zur Rangliste</a>
+</div>
+
+<script>
+const sliders = document.querySelectorAll('.slider');
+const totalScoreDisplay = document.getElementById('total-score');
+const fileInput = document.getElementById('file-input');
+const cardImage = document.getElementById('card-image');
+const imageCardElement = document.getElementById('img-trigger');
+const placeholder = document.getElementById('placeholder');
+const saveBtn = document.getElementById('save-btn');
+const rankDisplay = document.getElementById('calculated-rank');
+const fazitInput = document.getElementById('product-fazit');
+
+let currentImageData = null;
+let scoreCalculated = 8.0;
+let finalDeterminedRank = 1;
+
+fazitInput.addEventListener('input', function() {
+this.style.height = 'auto';
+this.style.height = this.scrollHeight + 'px';
+});
+
+function openDB(callback) {
+const request = indexedDB.open("FinalRankingDatabase", 1);
+request.onupgradeneeded = function(e) {
+const db = e.target.result;
+if (!db.objectStoreNames.contains("eintraege")) {
+db.createObjectStore("eintraege", { keyPath: "id", autoIncrement: true });
+}
+};
+request.onsuccess = function(e) { callback(e.target.result); };
+}
+
+function ermittlePlatzAutomatisch(aktuellerScore) {
+openDB(function(db) {
+if (!db.objectStoreNames.contains("eintraege")) {
+rankDisplay.textContent = "Platz 1 (Erster Eintrag)";
+finalDeterminedRank = 1;
+return;
+}
+const tx = db.transaction("eintraege", "readonly");
+const store = tx.objectStore("eintraege");
+const request = store.getAll();
+
+request.onsuccess = function(e) {
+const eintraege = e.target.result;
+if (eintraege.length === 0) {
+rankDisplay.textContent = "Platz 1";
+finalDeterminedRank = 1;
+return;
+}
+
+const alleScores = eintraege.map(item => item.score);
+alleScores.sort((a, b) => b - a);
+
+let platz = 1;
+for (let i = 0; i < alleScores.length; i++) {
+if (aktuellerScore < alleScores[i]) {
+platz++;
+} else {
+break;
+}
+}
+
+rankDisplay.textContent = " " + platz + " von " + (eintraege.length + 1);
+finalDeterminedRank = platz;
+};
+});
+}
+
+function updateScores() {
+let sum = 0;
+sliders.forEach(slider => {
+const row = slider.closest('.category-row');
+row.querySelector('.percent-input').value = slider.value + '%';
+row.querySelector('.bar-fill').style.width = slider.value + '%';
+sum += parseInt(slider.value);
+});
+scoreCalculated = (sum / sliders.length / 10).toFixed(1);
+totalScoreDisplay.textContent = scoreCalculated + ' / 10';
+
+ermittlePlatzAutomatisch(parseFloat(scoreCalculated));
+}
+
+sliders.forEach(s => s.addEventListener('input', updateScores));
+updateScores();
+
+imageCardElement.addEventListener('click', () => fileInput.click());
+
+fileInput.addEventListener('change', function() {
+const file = this.files[0];
+if (file) {
+const reader = new FileReader();
+reader.onload = function(e) {
+currentImageData = e.target.result;
+cardImage.src = currentImageData;
+cardImage.classList.remove('hidden');
+placeholder.classList.add('hidden');
+};
+reader.readAsDataURL(file);
+}
+});
+
+saveBtn.addEventListener('click', () => {
+const nameInput = document.getElementById('product-name');
+const name = nameInput.value.trim();
+
+if (!name) return alert("Bitte einen Namen eingeben!");
+
+const neuerEintrag = {
+name: name,
+tier: "Platz " + finalDeterminedRank,
+score: parseFloat(scoreCalculated),
+image: currentImageData,
+fazit: fazitInput.value.trim()
+};
+
+openDB(function(db) {
+const tx = db.transaction("eintraege", "readwrite");
+tx.objectStore("eintraege").add(neuerEintrag);
+tx.oncomplete = function() {
+alert("Erfolgreich gespeichert!");
+
+nameInput.value = "";
+cardImage.classList.add('hidden');
+placeholder.classList.remove('hidden');
+currentImageData = null;
+fileInput.value = "";
+fazitInput.value = "";
+fazitInput.style.height = '140px';
+updateScores();
+};
+});
+});
+</script>
+</body>
+</html>
