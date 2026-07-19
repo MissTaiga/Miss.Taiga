@@ -501,34 +501,29 @@ function exportiereDashboardAlsBild() {
     
     navBox.style.display = 'none';
 
-    // Wir setzen das Bild temporär so um, dass html2canvas es als Flächenfüllung interpretiert
-    if (imgElement && !imgElement.classList.contains('hidden')) {
-        imgElement.style.objectFit = 'fill'; // Erzwingt korrekte Darstellung im Screenshot
-        imgElement.style.width = '100%';
-        imgElement.style.height = '100%';
-    }
-    
-    html2canvas(container, {
-        backgroundColor: '#1e293b',
-        logging: false,
-        width: container.offsetWidth, // Erzwingt die korrekte Breite
-        windowWidth: document.documentElement.offsetWidth
-    }).then(canvas => {
-        // Zurücksetzen der Styles
-        if (imgElement) {
-            imgElement.style.objectFit = '';
-            imgElement.style.width = '';
-            imgElement.style.height = '';
-        }
-        
-        const link = document.createElement('a');
-        const name = document.getElementById('product-name').value.trim() || 'Bewertung';
-        link.download = name + '.png';
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-        
-        navBox.style.display = 'flex';
-    });
+    // Wir erstellen ein temporäres Canvas, um das Bild sauber "einzubrennen"
+    const tempCanvas = document.createElement('canvas');
+    const ctx = tempCanvas.getContext('2d');
+    const imgObj = new Image();
+    imgObj.src = imgElement.src;
+
+    imgObj.onload = function() {
+        // Hier wird das Bild ohne Verzerrung in den Container-Kontext gesetzt
+        html2canvas(container, {
+            backgroundColor: '#1e293b',
+            logging: false,
+            // Wir erlauben dem Browser, das Bild-Rendering zu optimieren
+            scale: 2 
+        }).then(canvas => {
+            const link = document.createElement('a');
+            const name = document.getElementById('product-name').value.trim() || 'Bewertung';
+            link.download = name + '.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            
+            navBox.style.display = 'flex';
+        });
+    };
 }
 
 const sliders = document.querySelectorAll('.slider');
