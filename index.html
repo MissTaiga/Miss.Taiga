@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Miss Taiga's Bewertung</title>
+<!-- html2canvas Bibliothek für den Bild-Export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 * {
 box-sizing: border-box;
@@ -50,7 +52,6 @@ overflow: hidden;
 box-shadow: inset 0 0 15px rgba(147, 197, 253, 0.05);
 }
 
-/* Dezenter Licht-Glow im Hintergrund des Headers */
 .frosty-header::before {
 content: '';
 position: absolute;
@@ -80,7 +81,6 @@ margin-top: 5px;
 opacity: 0.8;
 }
 
-/* Das obere Grid für Bild und Regler */
 .main-content {
 display: grid;
 grid-template-columns: 1fr 1.2fr;
@@ -97,7 +97,6 @@ font-size: 1.8rem;
 }
 }
 
-/* Linke Spalte: Karte & Upload */
 .card-section {
 display: flex;
 flex-direction: column;
@@ -167,7 +166,6 @@ margin-bottom: 10px;
 display: none !important;
 }
 
-/* Rechte Spalte: Kategorien & Regler */
 .rating-section {
 display: flex;
 flex-direction: column;
@@ -246,7 +244,6 @@ transition: transform 0.1s;
 transform: scale(1.2);
 }
 
-/* Score Boxen */
 .score-box {
 display: flex;
 justify-content: space-between;
@@ -289,7 +286,6 @@ font-weight: 800;
 color: #3b82f6;
 }
 
-/* Unterer Bereich im Container */
 .bottom-section {
 width: 100%;
 margin-top: 10px;
@@ -297,7 +293,6 @@ border-top: 1px solid #334155;
 padding-top: 25px;
 }
 
-/* Fazit-Box */
 .fazit-input {
 width: 100%;
 min-height: 140px;
@@ -325,7 +320,7 @@ color: #475569;
 text-align: center;
 }
 
-.nav-box {
+.external-nav-box {
 display: flex;
 gap: 15px;
 width: 100%;
@@ -374,14 +369,12 @@ background-color: #475569;
 
 <div class="container" id="dashboard-container">
 
-<!-- Frostiger Header -->
 <div class="frosty-header">
 <h1>Miss Taiga's</h1>
 <div class="subtitle">Penis-Bewertung</div>
 </div>
 
 <div class="main-content">
-<!-- Linke Spalte: Upload & Name -->
 <div class="card-section">
 <div class="input-group">
 <input type="text" id="product-name" placeholder="Name">
@@ -399,7 +392,6 @@ background-color: #475569;
 <input type="file" id="file-input" accept="image/*" class="hidden">
 </div>
 
-<!-- Rechte Spalte: Kategorien & Scores -->
 <div class="rating-section">
 <div class="category-row">
 <div class="category-header">
@@ -490,19 +482,54 @@ background-color: #475569;
 </div>
 </div>
 
-<!-- Unterer Bereich: Zentrierte Fazit-Box -->
 <div class="bottom-section">
 <textarea id="product-fazit" class="fazit-input" placeholder="Fazit"></textarea>
 </div>
 </div>
 
-<!-- Navigations-Box außerhalb/unterhalb des Hauptcontainers -->
 <div class="external-nav-box">
 <button class="btn btn-primary" id="save-btn">Speichern</button>
+<button class="btn btn-primary" onclick="exportiereDashboardAlsBild()" style="background-color: #06b6d4;">Als Bild speichern</button>
 <a href="rangliste.html" class="btn btn-secondary">Zur Rangliste</a>
 </div>
 
 <script>
+// Funktion zum Exportieren als Bild mit Größen-Fix
+function exportiereDashboardAlsBild() {
+    const container = document.getElementById('dashboard-container');
+    const navBox = document.querySelector('.external-nav-box');
+    const imgElement = document.getElementById('card-image');
+    
+    // Navigationsleiste vor Screenshot ausblenden
+    navBox.style.display = 'none';
+    
+    // Bildgröße für den Screenshot fixieren, um Verzerrung zu verhindern
+    if (imgElement && !imgElement.classList.contains('hidden')) {
+        imgElement.style.width = imgElement.clientWidth + 'px';
+        imgElement.style.height = imgElement.clientHeight + 'px';
+    }
+    
+    html2canvas(container, {
+        backgroundColor: '#1e293b',
+        logging: false
+    }).then(canvas => {
+        // Bildgrößen-Fix zurücksetzen
+        if (imgElement) {
+            imgElement.style.width = '';
+            imgElement.style.height = '';
+        }
+        
+        const link = document.createElement('a');
+        const name = document.getElementById('product-name').value.trim() || 'Bewertung';
+        link.download = name + '.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        
+        // Navigationsleiste wieder einblenden
+        navBox.style.display = 'flex';
+    });
+}
+
 const sliders = document.querySelectorAll('.slider');
 const totalScoreDisplay = document.getElementById('total-score');
 const fileInput = document.getElementById('file-input');
