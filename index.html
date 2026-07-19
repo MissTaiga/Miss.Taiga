@@ -524,8 +524,8 @@ background-color: #475569;
 <!-- Navigations-Box außerhalb/unterhalb des Hauptcontainers -->
 <div class="external-nav-box">
 <button class="btn btn-primary" id="save-btn">Speichern</button>
-<button class="btn" id="export-btn" onclick="exportiereDashboardAlsBild()">Screenshot</button>
-<a href="rangliste.html" class="btn btn-secondary">Rangliste</a>
+<button class="btn" id="export-btn" onclick="exportiereDashboardAlsBild()">Als Bild speichern</button>
+<a href="rangliste.html" class="btn btn-secondary">Zur Rangliste</a>
 </div>
 
 <script>
@@ -654,46 +654,63 @@ ermittleKategoriePlaetze();
 }
 
 function exportiereDashboardAlsBild() {
-const container = document.getElementById('dashboard-container');
-const navBox = document.querySelector('.external-nav-box');
-const imgElement = document.getElementById('card-image');
+    const container = document.getElementById('dashboard-container');
+    const navBox = document.querySelector('.external-nav-box');
+    const imgElement = document.getElementById('card-image');
+    const fazitInput = document.getElementById('product-fazit');
+    
+    navBox.style.display = 'none';
 
-navBox.style.display = 'none';
+   // Wir erstellen ein unsichtbares Div, das die Formatierung des Fazits übernimmt
+    const tempFazitDiv = document.createElement('div');
+    tempFazitDiv.style.whiteSpace = 'pre-wrap'; 
+    tempFazitDiv.style.wordBreak = 'break-word';
+    tempFazitDiv.style.width = fazitInput.offsetWidth + 'px';
+    tempFazitDiv.style.textAlign = 'center'; // ZENTRIERUNG HINZUGEFÜGT
+    tempFazitDiv.style.color = '#f8fafc';     // Stellt sicher, dass die Farbe stimmt
+    tempFazitDiv.style.fontSize = '1.05rem';  // Übernimmt deine Schriftgröße
+    tempFazitDiv.textContent = fazitInput.value;
+    
+    // Wir ersetzen das Textarea kurzzeitig durch unser Div
+    const originalParent = fazitInput.parentNode;
+    originalParent.replaceChild(tempFazitDiv, fazitInput);
 
-let tempDiv = null;
-let originalParent = null;
-const isImageVisible = !imgElement.classList.contains('hidden') && imgElement.src;
+    // Bild-Logik (wie vorher)
+    let tempImgDiv = null;
+    let originalImgParent = null;
+    const isImageVisible = !imgElement.classList.contains('hidden') && imgElement.src;
 
-if (isImageVisible) {
-tempDiv = document.createElement('div');
-tempDiv.style.width = imgElement.offsetWidth + 'px';
-tempDiv.style.height = imgElement.offsetHeight + 'px';
-tempDiv.style.backgroundImage = `url(${imgElement.src})`;
-tempDiv.style.backgroundSize = 'contain';
-tempDiv.style.backgroundPosition = 'center';
-tempDiv.style.backgroundRepeat = 'no-repeat';
-
-originalParent = imgElement.parentNode;
-originalParent.replaceChild(tempDiv, imgElement);
-}
-
-html2canvas(container, {
-backgroundColor: '#1e293b',
-logging: false,
-scale: 2 
-}).then(canvas => {
-if (isImageVisible && tempDiv && originalParent) {
-originalParent.replaceChild(imgElement, tempDiv);
-}
-
-const link = document.createElement('a');
-const name = document.getElementById('product-name').value.trim() || 'Bewertung';
-link.download = name + '.png';
-link.href = canvas.toDataURL('image/png');
-link.click();
-
-navBox.style.display = 'flex';
-});
+    if (isImageVisible) {
+        tempImgDiv = document.createElement('div');
+        tempImgDiv.style.width = imgElement.offsetWidth + 'px';
+        tempImgDiv.style.height = imgElement.offsetHeight + 'px';
+        tempImgDiv.style.backgroundImage = `url(${imgElement.src})`;
+        tempImgDiv.style.backgroundSize = 'contain';
+        tempImgDiv.style.backgroundPosition = 'center';
+        tempImgDiv.style.backgroundRepeat = 'no-repeat';
+        originalImgParent = imgElement.parentNode;
+        originalImgParent.replaceChild(tempImgDiv, imgElement);
+    }
+    
+    html2canvas(container, {
+        backgroundColor: '#1e293b',
+        logging: false,
+        scale: 2 
+    }).then(canvas => {
+        // Alles wieder zurücktauschen
+        if (isImageVisible && tempImgDiv && originalImgParent) {
+            originalImgParent.replaceChild(imgElement, tempImgDiv);
+        }
+        originalParent.replaceChild(fazitInput, tempFazitDiv);
+        
+        const link = document.createElement('a');
+        const name = document.getElementById('product-name').value.trim() || 'Bewertung';
+        link.download = name + '.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        
+        navBox.style.display = 'flex';
+    });
 }
 
 sliders.forEach(s => s.addEventListener('input', updateScores));
