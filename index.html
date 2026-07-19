@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Miss Taiga's Bewertung</title>
-<!-- html2canvas Bibliothek für den Bild-Export -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 * {
@@ -52,6 +51,7 @@ overflow: hidden;
 box-shadow: inset 0 0 15px rgba(147, 197, 253, 0.05);
 }
 
+/* Dezenter Licht-Glow im Hintergrund des Headers */
 .frosty-header::before {
 content: '';
 position: absolute;
@@ -81,6 +81,7 @@ margin-top: 5px;
 opacity: 0.8;
 }
 
+/* Das obere Grid für Bild und Regler */
 .main-content {
 display: grid;
 grid-template-columns: 1fr 1.2fr;
@@ -97,6 +98,7 @@ font-size: 1.8rem;
 }
 }
 
+/* Linke Spalte: Karte & Upload */
 .card-section {
 display: flex;
 flex-direction: column;
@@ -166,6 +168,7 @@ margin-bottom: 10px;
 display: none !important;
 }
 
+/* Rechte Spalte: Kategorien & Regler */
 .rating-section {
 display: flex;
 flex-direction: column;
@@ -244,6 +247,15 @@ transition: transform 0.1s;
 transform: scale(1.2);
 }
 
+.category-rank {
+font-size: 0.8rem;
+color: #93c5fd;
+font-weight: 600;
+opacity: 0.85;
+margin-top: -2px;
+}
+
+/* Score Boxen */
 .score-box {
 display: flex;
 justify-content: space-between;
@@ -286,6 +298,7 @@ font-weight: 800;
 color: #3b82f6;
 }
 
+/* Unterer Bereich im Container */
 .bottom-section {
 width: 100%;
 margin-top: 10px;
@@ -293,6 +306,7 @@ border-top: 1px solid #334155;
 padding-top: 25px;
 }
 
+/* Fazit-Box */
 .fazit-input {
 width: 100%;
 min-height: 140px;
@@ -322,15 +336,15 @@ text-align: center;
 
 .external-nav-box {
 display: flex;
-gap: 5px;
+gap: 15px;
 width: 100%;
-max-width: 450px;
+max-width: 550px;
+justify-content: center;
 }
 
 .btn {
 flex: 1;
-margin-top: 20px;
-
+margin-top: 30px;
 padding: 12px;
 border: none;
 border-radius: 8px;
@@ -355,6 +369,15 @@ color: white;
 background-color: #1d4ed8;
 }
 
+#export-btn {
+background-color: #06b6d4;
+color: white;
+}
+
+#export-btn:hover {
+background-color: #0891b2;
+}
+
 .btn-secondary {
 background-color: #334155;
 color: #e2e8f0;
@@ -369,12 +392,14 @@ background-color: #475569;
 
 <div class="container" id="dashboard-container">
 
+<!-- Frostiger Header -->
 <div class="frosty-header">
 <h1>Miss Taiga's</h1>
 <div class="subtitle">Penis-Bewertung</div>
 </div>
 
 <div class="main-content">
+<!-- Linke Spalte: Upload & Name -->
 <div class="card-section">
 <div class="input-group">
 <input type="text" id="product-name" placeholder="Name">
@@ -392,6 +417,7 @@ background-color: #475569;
 <input type="file" id="file-input" accept="image/*" class="hidden">
 </div>
 
+<!-- Rechte Spalte: Kategorien & Scores -->
 <div class="rating-section">
 <div class="category-row">
 <div class="category-header">
@@ -402,6 +428,7 @@ background-color: #475569;
 <div class="bar-fill"></div>
 <input type="range" class="slider" min="0" max="100" value="80">
 </div>
+<div class="category-rank">Berechne...</div>
 </div>
 
 <div class="category-row">
@@ -413,6 +440,7 @@ background-color: #475569;
 <div class="bar-fill"></div>
 <input type="range" class="slider" min="0" max="100" value="80">
 </div>
+<div class="category-rank">Berechne...</div>
 </div>
 
 <div class="category-row">
@@ -424,6 +452,7 @@ background-color: #475569;
 <div class="bar-fill"></div>
 <input type="range" class="slider" min="0" max="100" value="80">
 </div>
+<div class="category-rank">Berechne...</div>
 </div>
 
 <div class="category-row">
@@ -435,6 +464,7 @@ background-color: #475569;
 <div class="bar-fill"></div>
 <input type="range" class="slider" min="0" max="100" value="80">
 </div>
+<div class="category-rank">Berechne...</div>
 </div>
 
 <div class="category-row">
@@ -446,6 +476,7 @@ background-color: #475569;
 <div class="bar-fill"></div>
 <input type="range" class="slider" min="0" max="100" value="80">
 </div>
+<div class="category-rank">Berechne...</div>
 </div>
 
 <div class="category-row">
@@ -457,6 +488,7 @@ background-color: #475569;
 <div class="bar-fill"></div>
 <input type="range" class="slider" min="0" max="100" value="80">
 </div>
+<div class="category-rank">Berechne...</div>
 </div>
 
 <div class="category-row">
@@ -468,6 +500,7 @@ background-color: #475569;
 <div class="bar-fill"></div>
 <input type="range" class="slider" min="0" max="100" value="80">
 </div>
+<div class="category-rank">Berechne...</div>
 </div>
 
 <div class="score-box">
@@ -482,56 +515,20 @@ background-color: #475569;
 </div>
 </div>
 
+<!-- Unterer Bereich: Zentrierte Fazit-Box -->
 <div class="bottom-section">
 <textarea id="product-fazit" class="fazit-input" placeholder="Fazit"></textarea>
 </div>
 </div>
 
+<!-- Navigations-Box außerhalb/unterhalb des Hauptcontainers -->
 <div class="external-nav-box">
 <button class="btn btn-primary" id="save-btn">Speichern</button>
-<button class="btn btn-primary" onclick="exportiereDashboardAlsBild()" style="background-color: #06b6d4;">Screenshot</button>
+<button class="btn" id="export-btn" onclick="exportiereDashboardAlsBild()">Als Bild speichern</button>
 <a href="rangliste.html" class="btn btn-secondary">Zur Rangliste</a>
 </div>
 
 <script>
-function exportiereDashboardAlsBild() {
-    const container = document.getElementById('dashboard-container');
-    const navBox = document.querySelector('.external-nav-box');
-    const imgElement = document.getElementById('card-image');
-    
-    navBox.style.display = 'none';
-
-    // Wir erstellen ein temporäres Element, das das Bild exakt wie der Container anzeigt
-    const tempDiv = document.createElement('div');
-    tempDiv.style.width = imgElement.offsetWidth + 'px';
-    tempDiv.style.height = imgElement.offsetHeight + 'px';
-    tempDiv.style.backgroundImage = `url(${imgElement.src})`;
-    tempDiv.style.backgroundSize = 'contain';
-    tempDiv.style.backgroundPosition = 'center';
-    tempDiv.style.backgroundRepeat = 'no-repeat';
-
-    // Wir ersetzen das img kurzzeitig durch den perfekt ausgerichteten div
-    const originalParent = imgElement.parentNode;
-    originalParent.replaceChild(tempDiv, imgElement);
-    
-    html2canvas(container, {
-        backgroundColor: '#1e293b',
-        logging: false,
-        scale: 2 
-    }).then(canvas => {
-        // Rücktausch: img wieder an seinen Platz
-        originalParent.replaceChild(imgElement, tempDiv);
-        
-        const link = document.createElement('a');
-        const name = document.getElementById('product-name').value.trim() || 'Bewertung';
-        link.download = name + '.png';
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-        
-        navBox.style.display = 'flex';
-    });
-}
-
 const sliders = document.querySelectorAll('.slider');
 const totalScoreDisplay = document.getElementById('total-score');
 const fileInput = document.getElementById('file-input');
@@ -560,6 +557,48 @@ db.createObjectStore("eintraege", { keyPath: "id", autoIncrement: true });
 }
 };
 request.onsuccess = function(e) { callback(e.target.result); };
+}
+
+function ermittleKategoriePlaetze() {
+openDB(function(db) {
+if (!db.objectStoreNames.contains("eintraege")) return;
+const tx = db.transaction("eintraege", "readonly");
+const store = tx.objectStore("eintraege");
+const request = store.getAll();
+
+request.onsuccess = function(e) {
+const eintraege = e.target.result;
+
+sliders.forEach(slider => {
+const row = slider.closest('.category-row');
+const katName = row.querySelector('.category-name').textContent.trim();
+const aktuellerWert = parseInt(slider.value);
+
+const alleWerte = eintraege.map(item => {
+if (item.kategorien && item.kategorien[katName] !== undefined) {
+return item.kategorien[katName];
+}
+return 80; 
+});
+
+alleWerte.sort((a, b) => b - a);
+
+let platz = 1;
+for (let i = 0; i < alleWerte.length; i++) {
+if (aktuellerWert < alleWerte[i]) {
+platz++;
+} else {
+break;
+}
+}
+
+const rankElem = row.querySelector('.category-rank');
+if (rankElem) {
+rankElem.textContent = "Platz " + platz + " von " + (eintraege.length + 1);
+}
+});
+};
+});
 }
 
 function ermittlePlatzAutomatisch(aktuellerScore) {
@@ -611,6 +650,50 @@ scoreCalculated = (sum / sliders.length / 10).toFixed(1);
 totalScoreDisplay.textContent = scoreCalculated + ' / 10';
 
 ermittlePlatzAutomatisch(parseFloat(scoreCalculated));
+ermittleKategoriePlaetze();
+}
+
+function exportiereDashboardAlsBild() {
+const container = document.getElementById('dashboard-container');
+const navBox = document.querySelector('.external-nav-box');
+const imgElement = document.getElementById('card-image');
+
+navBox.style.display = 'none';
+
+let tempDiv = null;
+let originalParent = null;
+const isImageVisible = !imgElement.classList.contains('hidden') && imgElement.src;
+
+if (isImageVisible) {
+tempDiv = document.createElement('div');
+tempDiv.style.width = imgElement.offsetWidth + 'px';
+tempDiv.style.height = imgElement.offsetHeight + 'px';
+tempDiv.style.backgroundImage = `url(${imgElement.src})`;
+tempDiv.style.backgroundSize = 'contain';
+tempDiv.style.backgroundPosition = 'center';
+tempDiv.style.backgroundRepeat = 'no-repeat';
+
+originalParent = imgElement.parentNode;
+originalParent.replaceChild(tempDiv, imgElement);
+}
+
+html2canvas(container, {
+backgroundColor: '#1e293b',
+logging: false,
+scale: 2 
+}).then(canvas => {
+if (isImageVisible && tempDiv && originalParent) {
+originalParent.replaceChild(imgElement, tempDiv);
+}
+
+const link = document.createElement('a');
+const name = document.getElementById('product-name').value.trim() || 'Bewertung';
+link.download = name + '.png';
+link.href = canvas.toDataURL('image/png');
+link.click();
+
+navBox.style.display = 'flex';
+});
 }
 
 sliders.forEach(s => s.addEventListener('input', updateScores));
@@ -638,12 +721,19 @@ const name = nameInput.value.trim();
 
 if (!name) return alert("Bitte einen Namen eingeben!");
 
+const kategorienDaten = {};
+sliders.forEach(slider => {
+const katName = slider.closest('.category-row').querySelector('.category-name').textContent.trim();
+kategorienDaten[katName] = parseInt(slider.value);
+});
+
 const neuerEintrag = {
 name: name,
 tier: "Platz " + finalDeterminedRank,
 score: parseFloat(scoreCalculated),
 image: currentImageData,
-fazit: fazitInput.value.trim()
+fazit: fazitInput.value.trim(),
+kategorien: kategorienDaten
 };
 
 openDB(function(db) {
