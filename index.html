@@ -501,29 +501,35 @@ function exportiereDashboardAlsBild() {
     
     navBox.style.display = 'none';
 
-    // Wir erstellen ein temporäres Canvas, um das Bild sauber "einzubrennen"
-    const tempCanvas = document.createElement('canvas');
-    const ctx = tempCanvas.getContext('2d');
-    const imgObj = new Image();
-    imgObj.src = imgElement.src;
+    // Wir erstellen ein temporäres Element, das das Bild exakt wie der Container anzeigt
+    const tempDiv = document.createElement('div');
+    tempDiv.style.width = imgElement.offsetWidth + 'px';
+    tempDiv.style.height = imgElement.offsetHeight + 'px';
+    tempDiv.style.backgroundImage = `url(${imgElement.src})`;
+    tempDiv.style.backgroundSize = 'contain';
+    tempDiv.style.backgroundPosition = 'center';
+    tempDiv.style.backgroundRepeat = 'no-repeat';
 
-    imgObj.onload = function() {
-        // Hier wird das Bild ohne Verzerrung in den Container-Kontext gesetzt
-        html2canvas(container, {
-            backgroundColor: '#1e293b',
-            logging: false,
-            // Wir erlauben dem Browser, das Bild-Rendering zu optimieren
-            scale: 2 
-        }).then(canvas => {
-            const link = document.createElement('a');
-            const name = document.getElementById('product-name').value.trim() || 'Bewertung';
-            link.download = name + '.png';
-            link.href = canvas.toDataURL('image/png');
-            link.click();
-            
-            navBox.style.display = 'flex';
-        });
-    };
+    // Wir ersetzen das img kurzzeitig durch den perfekt ausgerichteten div
+    const originalParent = imgElement.parentNode;
+    originalParent.replaceChild(tempDiv, imgElement);
+    
+    html2canvas(container, {
+        backgroundColor: '#1e293b',
+        logging: false,
+        scale: 2 
+    }).then(canvas => {
+        // Rücktausch: img wieder an seinen Platz
+        originalParent.replaceChild(imgElement, tempDiv);
+        
+        const link = document.createElement('a');
+        const name = document.getElementById('product-name').value.trim() || 'Bewertung';
+        link.download = name + '.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        
+        navBox.style.display = 'flex';
+    });
 }
 
 const sliders = document.querySelectorAll('.slider');
