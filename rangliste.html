@@ -6,147 +6,134 @@
 <title>🏆 Globale Rangliste</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
-• { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-body { background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); min-height: 100vh; color: #f8fafc; padding: 40px 20px; display: flex; flex-direction: column; align-items: center; gap: 24px; }
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+body { background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); min-height: 100vh; color: #f8fafc; padding: 40px 20px; display: flex; flex-direction: column; align-items: center; }
 
 .leaderboard-container { width: 100%; max-width: 1000px; background: rgba(30, 41, 59, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; padding: 32px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); }
 
-/* Frostiger Header */
-.frosty-header { width: 100%; margin-bottom: 20px; background: linear-gradient(135deg, rgba(147, 197, 253, 0.07), rgba(6, 182, 212, 0.03)); backdrop-filter: blur(8px); border-radius: 12px; border: 1px solid rgba(147, 197, 253, 0.15); text-align: center; position: relative; overflow: hidden; }
-.frosty-header h1 { font-size: 2.2rem; font-weight: 300; margin-bottom: 7px; letter-spacing: 2px; color: #e2e8f0; font-family: 'Cambria', 'Georgia', serif; }
-.frosty-header .subtitle { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 4px; color: #93c5fd; margin-bottom: 25px; opacity: 0.8; }
+/* Frosty Header */
+.frosty-header { width: 100%; margin-bottom: 20px; background: linear-gradient(135deg, rgba(147, 197, 253, 0.07), rgba(6, 182, 212, 0.03)); backdrop-filter: blur(8px); border-radius: 12px; border: 1px solid rgba(147, 197, 253, 0.15); text-align: center; padding: 20px; }
+.frosty-header h1 { font-size: 2.2rem; font-weight: 300; letter-spacing: 2px; color: #e2e8f0; font-family: 'Cambria', serif; }
+.frosty-header .subtitle { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 4px; color: #93c5fd; margin-top: 5px; opacity: 0.8; }
 
-.leaderboard-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+/* Grid Layout */
+.leaderboard-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; width: 100%; }
+.leaderboard-item { display: flex; align-items: center; background: rgba(15, 23, 42, 0.4); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 10px; gap: 8px; position: relative; min-width: 0; }
 
-/* Klick-Funktion entfernt */
-.leaderboard-item { display: flex; align-items: center; background: rgba(15, 23, 42, 0.4); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 16px; padding: 16px; gap: 12px; position: relative; }
+/* Ränge */
+.rank-1 { background: linear-gradient(135deg, rgba(250, 204, 21, 0.15) 0%, rgba(15, 23, 42, 0.4) 100%); border: 1px solid rgba(250, 204, 21, 0.2); }
+.rank-1 .leaderboard-placement { color: #facc15 !important; }
+.rank-2 { background: linear-gradient(135deg, rgba(203, 213, 225, 0.15) 0%, rgba(15, 23, 42, 0.4) 100%); border: 1px solid rgba(203, 213, 225, 0.2); }
+.rank-3 { background: linear-gradient(135deg, rgba(180, 83, 9, 0.15) 0%, rgba(15, 23, 42, 0.4) 100%); border: 1px solid rgba(180, 83, 9, 0.2); }
 
-.leaderboard-item:nth-child(1) { background: linear-gradient(135deg, rgba(250, 204, 21, 0.15) 0%, rgba(15, 23, 42, 0.4) 100%); border: 1px solid rgba(250, 204, 21, 0.2); }
-.leaderboard-item:nth-child(2) { background: linear-gradient(135deg, rgba(203, 213, 225, 0.15) 0%, rgba(15, 23, 42, 0.4) 100%); border: 1px solid rgba(203, 213, 225, 0.2); }
-.leaderboard-item:nth-child(3) { background: linear-gradient(135deg, rgba(180, 83, 9, 0.15) 0%, rgba(15, 23, 42, 0.4) 100%); border: 1px solid rgba(180, 83, 9, 0.2); }
+/* Tooltip & Balken */
+.tooltip { position: absolute; bottom: 110%; left: 50%; transform: translateX(-50%); background: rgba(15, 23, 42, 0.95); border: 1px solid #3b82f6; padding: 10px; border-radius: 10px; font-size: 0.75rem; width: 180px; opacity: 0; visibility: hidden; z-index: 20; pointer-events: none; }
+.leaderboard-item:hover .tooltip { opacity: 1; visibility: visible; }
+.tooltip-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; gap: 8px; }
+.tooltip-label { min-width: 60px; flex-shrink: 0; }
+.tooltip-bar-bg { flex-grow: 1; height: 3px; background: #0f172a; border-radius: 2px; }
+.tooltip-bar-fill { height: 100%; background: #38bdf8; border-radius: 2px; }
 
-@media (max-width: 850px) { .leaderboard-list { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 580px) { .leaderboard-list { grid-template-columns: 1fr; } }
-
-.leaderboard-placement { font-size: 1.5rem; font-weight: 800; color: #64748b; text-align: center; min-width: 35px; }
-.leaderboard-item:nth-child(1) .leaderboard-placement { color: #facc15; font-size: 2.0rem; }
-.leaderboard-item:nth-child(2) .leaderboard-placement { color: #cbd5e1; }
-.leaderboard-item:nth-child(3) .leaderboard-placement { color: #b45309; }
-
-.leaderboard-img-box { width: 60px; height: 60px; border-radius: 10px; background: #0f172a; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.1); flex-shrink: 0; }
+/* UI Elemente */
+#sort-select { padding: 8px 16px; background: #1e293b; color: white; border: 1px solid #3b82f6; border-radius: 8px; cursor: pointer; margin-bottom: 20px; }
+.delete-btn { background: transparent; border: none; color: #ef4444; font-size: 1.2rem; cursor: pointer; opacity: 0; position: absolute; top: 2px; right: 6px; }
+.leaderboard-item:hover .delete-btn { opacity: 0.6; }
+.back-btn { display: inline-block; background: rgba(255, 255, 255, 0.05); border-radius: 14px; color: white; padding: 10px 20px; text-decoration: none; margin-bottom: 20px; }
+.leaderboard-placement { font-size: 1.1rem; font-weight: 800; color: #64748b; min-width: 25px; text-align: center; }
+.leaderboard-img-box { width: 40px; height: 40px; border-radius: 8px; background: #0f172a; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.05); }
 .leaderboard-img-box img { width: 100%; height: 100%; object-fit: contain; }
-.leaderboard-info { flex-grow: 1; min-width: 0; }
-.leaderboard-name { font-weight: 700; font-size: 1.1rem; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.leaderboard-score { font-size: 1.4rem; font-weight: 800; color: #38bdf8; flex-shrink: 0; }
-
-/* Verstecke den Button standardmäßig */
-.delete-btn {
-background: transparent;
-border: none;
-color: #ef4444;
-font-size: 1.5rem;
-cursor: pointer;
-opacity: 0;
-transition: opacity 0.2s;
-position: absolute;
-top: 4px;
-right: 8px;
-z-index: 10;
-}
-
-/* Zeige den Button nur, wenn man über die Karte (leaderboard-item) fährt */
-.leaderboard-item:hover .delete-btn {
-opacity: 0.6;
-}
-
-/* Erhöhe die Sichtbarkeit beim direkten Hover über das X */
-.delete-btn:hover {
-opacity: 1 !important;
-}
-
-.back-btn { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 14px; color: white; padding: 12px 24px; text-decoration: none; font-weight: 600; font-size: 0.95rem; margin-bottom: 20px; transition: all 0.2s; }
-.back-btn:hover { background: rgba(255, 255, 255, 0.1); }
+.leaderboard-name { font-weight: 600; font-size: 0.9rem; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-grow: 1; }
+.leaderboard-score { font-size: 1rem; font-weight: 800; color: #38bdf8; }
 </style>
 </head>
 <body>
 
-<a href="index.html" class="back-btn">⮌ Zurück zum Bewerten</a>
+<a href="index.html" class="back-btn">⮌ Zurück</a>
 
 <div class="leaderboard-container">
-<!-- Header ist jetzt innerhalb des Containers -->
-<div class="frosty-header">
-<h1>Miss Taiga's</h1>
-<div class="subtitle">Rangliste</div>
-</div>
+    <div class="frosty-header">
+        <h1>Miss Taiga's</h1>
+        <div class="subtitle">Rangliste</div>
+    </div>
 
-<div class="leaderboard-list" id="leaderboard"></div>
+    <div style="text-align: center;">
+        <select id="sort-select" onchange="sortiereRangliste(this.value)">
+            <option value="score">Sortieren nach: Gesamt</option>
+            <option value="Laenge">Länge</option><option value="Dicke">Dicke</option>
+            <option value="Optik">Optik</option><option value="Eichel">Eichel</option>
+            <option value="Hoden">Hoden</option><option value="Rasur">Rasur</option>
+            <option value="Form">Form</option>
+        </select>
+    </div>
+
+    <div class="leaderboard-list" id="leaderboard"></div>
 </div>
 
 <script>
 const leaderboard = document.getElementById('leaderboard');
+let aktuelleEintraege = [];
 
 function openDB(callback) {
-const request = indexedDB.open("FinalRankingDatabase", 1);
-request.onsuccess = function(e) { callback(e.target.result); };
+    const request = indexedDB.open("FinalRankingDatabase", 1);
+    request.onsuccess = (e) => callback(e.target.result);
 }
 
 function ladeRangliste() {
-openDB(function(db) {
-if (!db.objectStoreNames.contains("eintraege")) { return; }
-const tx = db.transaction("eintraege", "readonly");
-const store = tx.objectStore("eintraege");
-const request = store.getAll();
-request.onsuccess = function(e) {
-const eintraege = e.target.result;
-eintraege.sort((a, b) => b.score - a.score);
-leaderboard.innerHTML = "";
-eintraege.forEach((item, index) => {
-const row = document.createElement('div');
-row.className = 'leaderboard-item';
-
-// Klick-Listener für Modal entfernt
-const placement = document.createElement('div');
-placement.className = 'leaderboard-placement';
-placement.textContent = '' + (index + 1) + '.';
-row.appendChild(placement);
-
-const imgBox = document.createElement('div');
-imgBox.className = 'leaderboard-img-box';
-if (item.image) { const img = document.createElement('img'); img.src = item.image; imgBox.appendChild(img); }
-else { imgBox.textContent = "📦"; }
-row.appendChild(imgBox);
-
-const info = document.createElement('div');
-info.className = 'leaderboard-info';
-const nameDiv = document.createElement('div');
-nameDiv.className = 'leaderboard-name';
-nameDiv.textContent = item.name;
-info.appendChild(nameDiv);
-row.appendChild(info);
-
-const scoreDiv = document.createElement('div');
-scoreDiv.className = 'leaderboard-score';
-scoreDiv.textContent = Number(item.score).toFixed(1);
-row.appendChild(scoreDiv);
-
-const deleteBtn = document.createElement('button');
-deleteBtn.className = 'delete-btn';
-deleteBtn.innerHTML = '×';
-deleteBtn.onclick = function(e) {
-if (confirm("Löschen?")) {
-openDB(function(db) {
-const tx = db.transaction("eintraege", "readwrite");
-tx.objectStore("eintraege").delete(item.id);
-tx.oncomplete = function() { ladeRangliste(); };
-});
+    openDB(db => {
+        if (!db.objectStoreNames.contains("eintraege")) return;
+        db.transaction("eintraege", "readonly").objectStore("eintraege").getAll().onsuccess = (e) => {
+            aktuelleEintraege = e.target.result;
+            sortiereRangliste('score');
+        };
+    });
 }
-};
-row.appendChild(deleteBtn);
-leaderboard.appendChild(row);
-});
-};
-});
+
+function sortiereRangliste(kriterium) {
+    aktuelleEintraege.sort((a, b) => {
+        const valA = kriterium === 'score' ? a.score : (a.kategorien?.[kriterium] || 0);
+        const valB = kriterium === 'score' ? b.score : (b.kategorien?.[kriterium] || 0);
+        return valB - valA;
+    });
+    renderRangliste(aktuelleEintraege);
 }
+
+function renderRangliste(eintraege) {
+    leaderboard.innerHTML = "";
+    eintraege.forEach((item, index) => {
+        const row = document.createElement('div');
+        row.className = 'leaderboard-item';
+        if (index === 0) row.classList.add('rank-1');
+        if (index === 1) row.classList.add('rank-2');
+        if (index === 2) row.classList.add('rank-3');
+
+        const tooltip = document.createElement('div');
+        tooltip.className = 'tooltip';
+        let katHtml = "";
+        if (item.kategorien) {
+            for (const [kat, wert] of Object.entries(item.kategorien)) {
+                katHtml += `<div class="tooltip-row"><span class="tooltip-label">${kat}</span><div class="tooltip-bar-bg"><div class="tooltip-bar-fill" style="width: ${wert}%"></div></div><span style="min-width: 30px; text-align: right;">${wert}%</span></div>`;
+            }
+        }
+        tooltip.innerHTML = katHtml;
+        row.appendChild(tooltip);
+
+        row.innerHTML += `<div class="leaderboard-placement">${(index + 1)}.</div>
+                          <div class="leaderboard-img-box">${item.image ? `<img src="${item.image}">` : '📦'}</div>
+                          <div class="leaderboard-name">${item.name}</div>
+                          <div class="leaderboard-score">${Number(item.score).toFixed(1)}</div>
+                          <button class="delete-btn" onclick="loescheEintrag(${item.id})">×</button>`;
+        leaderboard.appendChild(row);
+    });
+}
+
+function loescheEintrag(id) {
+    if (confirm("Löschen?")) {
+        openDB(db => {
+            db.transaction("eintraege", "readwrite").objectStore("eintraege").delete(id).onsuccess = () => ladeRangliste();
+        });
+    }
+}
+
 ladeRangliste();
 </script>
 </body>
